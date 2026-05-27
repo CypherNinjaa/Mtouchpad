@@ -1,6 +1,7 @@
 // client/app/touchpad.tsx
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Pressable, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useConnectionStore } from "../store/connection";
@@ -60,10 +61,16 @@ export default function TouchpadScreen() {
           <TouchSurface send={send} style={styles.touchSurface} />
         </View>
 
-        {/* Footer info helper */}
+        {/* Footer gesture hints */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Drag to move cursor • Tap to left click
+            1☝ Drag → Move  •  Tap → Click  •  Hold → Right Click
+          </Text>
+          <Text style={styles.footerText}>
+            2☝ Drag → Scroll  •  Tap → Right Click  •  Pinch → Zoom
+          </Text>
+          <Text style={styles.footerText}>
+            3☝ Swipe → Switch App  •  4☝ Swipe → Virtual Desktop
           </Text>
         </View>
       </View>
@@ -142,12 +149,14 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: "center",
-    paddingBottom: 8,
+    paddingBottom: 4,
+    gap: 2,
   },
   footerText: {
     fontFamily: "PlusJakartaSans_500Medium",
-    fontSize: 13,
+    fontSize: 11,
     color: colors.mutedFg,
     textAlign: "center",
+    lineHeight: 16,
   },
 });

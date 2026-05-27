@@ -1,11 +1,11 @@
 // client/components/TouchSurface.tsx
 import React from "react";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import * as Haptics from "expo-haptics";
-import { Events } from "../lib/events";
+import { GestureDetector } from "react-native-gesture-handler";
 import { colors } from "../theme/colors";
 import { hardShadow } from "../theme/shadows";
+
+import { useGestures } from "../hooks/useGestures";
 
 interface TouchSurfaceProps {
   send: (event: any) => void;
@@ -13,40 +13,13 @@ interface TouchSurfaceProps {
 }
 
 export function TouchSurface({ send, style }: TouchSurfaceProps) {
-  const lastTranslation = React.useRef({ x: 0, y: 0 });
-
-  // Track pan movement for relative cursor positioning
-  const panGesture = Gesture.Pan()
-    .minPointers(1)
-    .maxPointers(1)
-    .onStart(() => {
-      lastTranslation.current = { x: 0, y: 0 };
-    })
-    .onUpdate((e) => {
-      const dx = e.translationX - lastTranslation.current.x;
-      const dy = e.translationY - lastTranslation.current.y;
-      lastTranslation.current = { x: e.translationX, y: e.translationY };
-      
-      // Send raw delta updates; the server applies acceleration & sensitivity.
-      send(Events.move(dx, dy));
-    });
-
-  // Single tap maps to left mouse click
-  const tapGesture = Gesture.Tap()
-    .numberOfTaps(1)
-    .onEnd(() => {
-      // Trigger light haptic bump
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-      send(Events.click("left"));
-    });
-
-  // Compose gestures. Run both simultaneously or in race.
-  // Tap should fire if no pan drag occurs.
-  const composedGesture = Gesture.Exclusive(panGesture, tapGesture);
+  const gestureLayout = useGestures(send);
 
   return (
-    <GestureDetector gesture={composedGesture}>
-      <View style={[styles.surface, style]} />
+    <GestureDetector gesture={gestureLayout}>
+      {/* collapsable={false} ensures Android creates a real native view
+          for gesture recognition instead of optimizing it away */}
+      <View style={[styles.surface, style]} collapsable={false} />
     </GestureDetector>
   );
 }

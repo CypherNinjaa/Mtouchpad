@@ -14,6 +14,16 @@ export const Events = {
     button,
   }),
   
+  mouseDown: (button: "left" | "right" | "middle" = "left") => ({
+    type: "mouse_down",
+    button,
+  }),
+  
+  mouseUp: (button: "left" | "right" | "middle" = "left") => ({
+    type: "mouse_up",
+    button,
+  }),
+  
   dblclick: (button: "left" = "left") => ({
     type: "dblclick",
     button,

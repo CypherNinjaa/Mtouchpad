@@ -1,8 +1,7 @@
 // client/app/_layout.tsx
-import React, { useEffect } from "react";
+import React from "react";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Outfit_700Bold } from "@expo-google-fonts/outfit";
 import {
   PlusJakartaSans_400Regular,
@@ -11,21 +10,12 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { colors } from "../theme/colors";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete
-SplashScreen.preventAutoHideAsync().catch(() => {});
-
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     Outfit_700Bold,
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
   });
-
-  useEffect(() => {
-    if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync().catch(() => {});
-    }
-  }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) {
     return (
