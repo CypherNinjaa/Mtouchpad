@@ -21,6 +21,11 @@ export function useWebSocket() {
     latestServerUrl.current = serverUrl;
   }, [serverUrl]);
 
+  const retryCountRef = useRef(retryCount);
+  useEffect(() => {
+    retryCountRef.current = retryCount;
+  }, [retryCount]);
+
   const disconnect = useCallback(() => {
     if (ws.current) {
       ws.current.onopen = null;
@@ -60,8 +65,8 @@ export function useWebSocket() {
     };
 
     socket.onclose = (e) => {
-      // Don't retry if the connection was deliberately closed or auth failed
-      if (e.code === 4001) {
+      // Don't retry if the connection was deliberately closed, auth failed, or rate-limited
+      if (e.code === 4001 || e.code === 4003) {
         setStatus("auth_failed");
         return;
       }
@@ -73,8 +78,8 @@ export function useWebSocket() {
       setStatus("disconnected");
       incrementRetry();
       
-      // Calculate backoff delay
-      const delay = Math.min(BASE_DELAY * Math.pow(1.5, retryCount), MAX_DELAY);
+      // Calculate backoff delay using ref to avoid recreating callback
+      const delay = Math.min(BASE_DELAY * Math.pow(1.5, retryCountRef.current), MAX_DELAY);
       
       setTimeout(() => {
         // Check if the serverUrl has changed in the meantime
@@ -83,7 +88,7 @@ export function useWebSocket() {
         }
       }, delay);
     };
-  }, [retryCount, setStatus, resetRetry, setLatency, incrementRetry, disconnect]);
+  }, [setStatus, resetRetry, setLatency, incrementRetry, disconnect]);
 
   const send = useCallback((event: object) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
