@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Mod
 import { router } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
+import { Feather } from "@expo/vector-icons";
 import { GeometricBg } from "../components/ui/GeometricBg";
 import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
@@ -150,7 +151,12 @@ export default function ConnectScreen() {
           </View>
 
           <View style={styles.buttonWrapper}>
-            <Button label="📷 Scan QR Code" onPress={handleScanPress} variant="secondary" />
+            <Button
+              label="Scan QR Code"
+              onPress={handleScanPress}
+              variant="secondary"
+              icon={<Feather name="camera" size={20} color={colors.foreground} />}
+            />
           </View>
         </View>
         
@@ -178,7 +184,7 @@ export default function ConnectScreen() {
                 style={styles.closeButton}
                 onPress={() => setShowScanner(false)}
               >
-                <Text style={styles.closeButtonText}>✕</Text>
+                <Feather name="x" size={20} color={colors.foreground} />
               </Pressable>
             </View>
 

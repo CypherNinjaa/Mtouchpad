@@ -15,6 +15,7 @@
 
 import { useRef, useMemo } from "react";
 import { Gesture } from "react-native-gesture-handler";
+import { Keyboard } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Events } from "../lib/events";
 
@@ -100,6 +101,7 @@ export function useGestures(send: (event: any) => void) {
     .minDistance(3)
     .onBegin((e) => {
       // onBegin fires on first touch BEFORE activation criteria (minDistance)
+      Keyboard.dismiss();
       maxPointers.current = e.numberOfPointers;
       gestureStartTime.current = Date.now();
     })

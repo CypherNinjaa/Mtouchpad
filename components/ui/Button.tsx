@@ -9,9 +9,10 @@ interface ButtonProps {
   onPress: (event: GestureResponderEvent) => void;
   variant?: "primary" | "secondary";
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
-export function Button({ label, onPress, variant = "primary", disabled = false }: ButtonProps) {
+export function Button({ label, onPress, variant = "primary", disabled = false, icon }: ButtonProps) {
   const scale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
@@ -54,6 +55,7 @@ export function Button({ label, onPress, variant = "primary", disabled = false }
           !disabled && pressed && styles.buttonPressed,
         ]}
       >
+        {icon}
         <Text
           style={[
             styles.text,
@@ -77,8 +79,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 14,
     minHeight: 48,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
   },
   buttonPressed: {
     transform: [{ translateX: 2 }, { translateY: 2 }],
