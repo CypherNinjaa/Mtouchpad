@@ -1,0 +1,8 @@
+websockets
+aiohttp
+pyautogui
+pynput
+qrcode[pil]
+pystray
+pillow
+pyinstaller
